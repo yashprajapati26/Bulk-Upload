@@ -53,29 +53,35 @@ export class UploadCsvComponent {
   errorsArray: errors[] | undefined
   ngOnInit() { }
   arr: any[] = []
+  disable: boolean = false;
 
   submit() {
-    this.ngxLoader.start();
 
     let formData = new FormData;
     for (let i = 0; i < this.files.length; i++) {
       formData.append("files", this.files[i], this.files[i]['name']);
     }
-    this.uploadcsvservice.upload(formData).subscribe((res: any) => {
-      console.log(res)
-      this.msg = res['msg']
-      this.sucessFile = res.data['success'];
-      this.errorFile = res.data['errors'];
-      this.successArray = res.data['successArray']
-      this.errorsArray = res.data['errorsArray']
-      this.createExcelSheet()
-      this.ngxLoader.stop();
-    }, (err: any) => {
-      console.log("err : ", err)
-      this.errmsg = err.error.msg
-      this.ngxLoader.stop();
+    if (this.files.length > 0) {
+      this.ngxLoader.start();
 
-    })
+      this.uploadcsvservice.upload(formData).subscribe((res: any) => {
+        console.log(res)
+        this.msg = res['msg']
+        this.sucessFile = res.data['success'];
+        this.errorFile = res.data['errors'];
+        this.successArray = res.data['successArray']
+        this.errorsArray = res.data['errorsArray']
+        this.createExcelSheet()
+        this.ngxLoader.stop();
+      }, (err: any) => {
+        console.log("err : ", err)
+        this.errmsg = err.error.msg
+        this.ngxLoader.stop();
+
+      })
+    } else {
+      this.errmsg = "please select file"
+    }
   }
 
   selectedFiles(event: any) {
@@ -87,6 +93,8 @@ export class UploadCsvComponent {
     } else {
       this.errmsg = undefined
       this.files = <Array<File>>event.target.files;
+      this.disable = true
+
     }
     console.log(this.files);
     console.log("files :", this.files)
@@ -113,14 +121,30 @@ export class UploadCsvComponent {
     if (files.length > 0) {
       console.log(`you dropeed ${files.length} files`, files)
     }
-    for (const item of files) {
-      this.files.push(item);
+    let type = files[0].type;
+    if (files.length > 1) this.errmsg = "Only one file at time allow";
+    else {
+      if (type != "text/csv") {
+        this.errmsg = "please select 'csv' file"
+      }
+      else {
+        this.files = []
+        this.errmsg = undefined;
+        for (const item of files) {
+          this.files.push(item);
+        }
+        this.disable = true
+      }
     }
   }
 
   onFileDropeed($event: any) {
-    for (const item of $event) {
-      this.files.push(item);
+    if (this.files.length > 1) this.errmsg = "Only one file at time allow";
+    else {
+      this.errmsg = undefined;
+      for (const item of $event) {
+        this.files.push(item);
+      }
     }
     console.log("files :", this.files)
   }

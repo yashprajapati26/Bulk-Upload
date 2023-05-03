@@ -56,6 +56,7 @@ const getCsvFile = async (req, res) => {
         .on("error", async (error) => console.error(error))
         .on("data", async (row) => {
           data.push(row);
+          console.log(row);
           let flagError = 0;
 
           // prefix check
@@ -75,21 +76,21 @@ const getCsvFile = async (req, res) => {
 
           //email check
           if (row.email == "") {
-            row.errors = row.errors + "email is required,";
+            row.errors = row.errors + "email is required ,";
             flagError = 1;
           } else {
             if (emailRegexp.test(row.email)) {
               console.log("email correct -", row.email);
             } else {
               console.log("email wrong -", row.email);
-              row.errors = row.errors + "email not correct,";
+              row.errors = row.errors + "email not correct ,";
               flagError = 1;
             }
           }
 
           // mobile check
           if (row.phone_no == "") {
-            row.errors = row.errors + "phone number is required,";
+            row.errors = row.errors + "phone number is required ,";
             flagError = 1;
           } else {
             if (
@@ -100,7 +101,7 @@ const getCsvFile = async (req, res) => {
               console.log("phone correct -", row.phone_no);
             } else {
               console.log("phone no wrong -", row.phone_no);
-              row.errors = row.errors + "phone number start with '+1 +91 +92' only,";
+              row.errors = row.errors + "phone number must start with '+1 +91 +92' ,";
               flagError = 1;
             }
           }
@@ -110,7 +111,7 @@ const getCsvFile = async (req, res) => {
             console.log("age correct -", row.age);
           } else {
             console.log("age no wrong -", row.age);
-            row.errors = row.errors + "age not must be number ,";
+            row.errors = row.errors + "age must be number ,";
             flagError = 1;
           }
 
@@ -127,25 +128,32 @@ const getCsvFile = async (req, res) => {
           );
 
           let length = success.length;
-          var bar = new Promise((resolve, reject) => {
-            success.forEach(async (row, index) => {
-              let isExist = await employeeService.findOne(["id"], {
-                email: row.email,
+          console.log("-->", length);
+          console.log("sucess : ", success);
+          console.log("error : ", errors);
+          var bar = new Promise((resolve) => {
+            if (success.length > 0) {
+              success.forEach(async (row, index) => {
+                let isExist = await employeeService.findOne(["id"], {
+                  email: row.email,
+                });
+                if (isExist) {
+                  let popVal = success.pop(row);
+                  popVal.errors = "dublicate email / email already used";
+                  errors.push(popVal);
+                } else {
+                  // save valid data in database
+                  await employeeService.create(row);
+                }
+                console.log("--> ", index, length - 1);
+                if (index === length - 1) {
+                  resolve();
+                }
               });
-              if (isExist) {
-                let popVal = success.pop(row);
-                popVal.errors = "email already used ,";
-                errors.push(popVal);
-              } else {
-                // save valid data in database
-                await employeeService.create(row);
-              }
-              if (index === length - 1) {
-                resolve();
-              }
-            });
+            } else {
+              resolve();
+            }
           });
-
           bar.then(async () => {
             console.log("sucess : ", success);
             console.log("error : ", errors);
