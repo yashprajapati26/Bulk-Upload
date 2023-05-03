@@ -3,6 +3,7 @@ import { UploadCsvService } from './upload-csv.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { success } from 'src/app/interfaces/success.interface';
 import { errors } from 'src/app/interfaces/errors.interface';
+import * as XLSX from "xlsx";
 
 @Component({
   selector: 'app-upload-csv',
@@ -51,6 +52,7 @@ export class UploadCsvComponent {
   successArray: success[] | undefined
   errorsArray: errors[] | undefined
   ngOnInit() { }
+  arr: any[] = []
 
   submit() {
     this.ngxLoader.start();
@@ -66,6 +68,7 @@ export class UploadCsvComponent {
       this.errorFile = res.data['errors'];
       this.successArray = res.data['successArray']
       this.errorsArray = res.data['errorsArray']
+      this.createExcelSheet()
       this.ngxLoader.stop();
     }, (err: any) => {
       console.log("err : ", err)
@@ -120,6 +123,23 @@ export class UploadCsvComponent {
       this.files.push(item);
     }
     console.log("files :", this.files)
+  }
+
+
+  createExcelSheet() {
+    const fileName = "results.xlsx";
+    const sheetName = ["success", "errors",];
+    this.arr = [this.successArray, this.errorsArray]
+    console.log("arr --> ", this.arr)
+    let wb = XLSX.utils.book_new();
+    console.log("wb --> ", wb)
+    for (var i = 0; i < sheetName.length; i++) {
+      let ws = XLSX.utils.json_to_sheet(this.arr[i]);
+      console.log("ws --> ", ws)
+
+      XLSX.utils.book_append_sheet(wb, ws, sheetName[i]);
+    }
+    XLSX.writeFile(wb, fileName);
   }
 
 

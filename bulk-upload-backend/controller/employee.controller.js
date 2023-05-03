@@ -1,6 +1,5 @@
 const fs = require("fs");
 const csv = require("fast-csv");
-const Employees = require("../models/employees.model");
 const employeeService = require("../service/employee.service");
 const { parseAsync } = require("json2csv");
 const path = require("path");
@@ -43,7 +42,7 @@ const getCsvFile = async (req, res) => {
     console.log("req file : ", req.file);
 
     let data = [];
-    let prefix = ["Mrs", "Mr", "Dr"];
+    let prefix = ["Mrs", "Mr", "Dr", "Miss"];
     let errors = [];
     let success = [];
     let file1Path;
@@ -60,34 +59,50 @@ const getCsvFile = async (req, res) => {
           let flagError = 0;
 
           // prefix check
-          if (prefix.includes(row.prefix)) {
-            console.log("prefix correct -", row.prefix);
-            row.errors = "";
-          } else {
-            console.log("prefix wrong -", row.prefix);
-            row.errors = "prefix not valiid ,";
+          if (row.prefix == "") {
+            row.errors = "prefix is required ,";
             flagError = 1;
+          } else {
+            if (prefix.includes(row.prefix)) {
+              console.log("prefix correct -", row.prefix);
+              row.errors = "";
+            } else {
+              console.log("prefix wrong -", row.prefix);
+              row.errors = "prefix not valid ,";
+              flagError = 1;
+            }
           }
 
-          if (emailRegexp.test(row.email)) {
-            console.log("email correct -", row.email);
-          } else {
-            console.log("email wrong -", row.email);
-            row.errors = row.errors + "email not correct,";
+          //email check
+          if (row.email == "") {
+            row.errors = row.errors + "email is required,";
             flagError = 1;
+          } else {
+            if (emailRegexp.test(row.email)) {
+              console.log("email correct -", row.email);
+            } else {
+              console.log("email wrong -", row.email);
+              row.errors = row.errors + "email not correct,";
+              flagError = 1;
+            }
           }
 
           // mobile check
-          if (
-            row.phone_no.startsWith("+91") ||
-            row.phone_no.startsWith("+1") ||
-            row.phone_no.startsWith("+92")
-          ) {
-            console.log("phone correct -", row.phone_no);
-          } else {
-            console.log("phone no wrong -", row.phone_no);
-            row.errors = row.errors + "phone number not correct,";
+          if (row.phone_no == "") {
+            row.errors = row.errors + "phone number is required,";
             flagError = 1;
+          } else {
+            if (
+              row.phone_no.startsWith("+91") ||
+              row.phone_no.startsWith("+1") ||
+              row.phone_no.startsWith("+92")
+            ) {
+              console.log("phone correct -", row.phone_no);
+            } else {
+              console.log("phone no wrong -", row.phone_no);
+              row.errors = row.errors + "phone number start with '+1 +91 +92' only,";
+              flagError = 1;
+            }
           }
 
           // // age  check
@@ -95,7 +110,7 @@ const getCsvFile = async (req, res) => {
             console.log("age correct -", row.age);
           } else {
             console.log("age no wrong -", row.age);
-            row.errors = row.errors + "age not correct,";
+            row.errors = row.errors + "age not must be number ,";
             flagError = 1;
           }
 
@@ -119,7 +134,7 @@ const getCsvFile = async (req, res) => {
               });
               if (isExist) {
                 let popVal = success.pop(row);
-                popVal.errors = "dublicate email / email already used";
+                popVal.errors = "email already used ,";
                 errors.push(popVal);
               } else {
                 // save valid data in database
