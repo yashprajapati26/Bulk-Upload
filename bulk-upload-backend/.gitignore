@@ -1,0 +1,29 @@
+# Node.js dependencies
+/node_modules
+
+# Environment variables
+.env
+
+# Built output
+/dist
+
+# Logs
+/logs
+
+# IDE and editor files
+/.vscode
+/.idea
+*.sublime-*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.tmp
+*.tmp.*
+*.bak
+*.cache
+
+# Others
+.DS_Store
+Thumbs.db
