@@ -2,9 +2,6 @@ var express = require("express");
 var router = express.Router();
 const employeeController = require("../controller/employee.controller");
 const multer = require("multer");
-const { celebrate, Segments } = require("celebrate");
-const { uploadValidator } = require("../validators/upload.validator");
-
 
 // local storage for save post files
 var storage = multer.diskStorage({

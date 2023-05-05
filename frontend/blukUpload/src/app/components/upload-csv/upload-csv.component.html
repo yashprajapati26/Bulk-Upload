@@ -1,8 +1,11 @@
 
-<p class="px-10 mx-20 pt-10 -mb-10 text-black hover:text-blue-500 cursor-pointer flex" routerLink=""><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+<div class="px-10 mx-20 pt-10 -mb-10 text-black  cursor-pointer flex"><svg routerLink="" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hover:text-blue-500">
   <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
 </svg>
-Go back</p>
+<p routerLink="">back</p>
+<h1 class="text-center mx-full w-screen">Upload any kind of data here</h1>
+</div>
+
 <div class="px-10 m-20 flex bg-gray-200 border border-gray-300 shadow-lg shadow-black">
 
   <div class="w-1/2 p-2">
@@ -27,6 +30,7 @@ Go back</p>
       <input
         type="file"
         name="file"
+        accept=".csv"
         (change)="selectedFiles($event)"
         #chooseFile
         hidden
@@ -62,18 +66,12 @@ Go back</p>
         To upload users you must follow below instaruction and template<br>Please ensure that:
       </p>
       <ul class="list-disc mx-5">
-        <li>all fields are complated</li>
-        <li>only valid email address are included</li>
-        <li>titles are written with a capital letter and do not icluded any full stops(Mr, Mrs, Ms, Miss, Dr)</li>
-        <li>that the column heading are delivered exactly as they are in the template.</li>
-
+        <li>all fields are required</li>
+        <li>yopu got 2 diffrent file</li>
+        <li>1. success 2. errors</li>
+        <li>data not save in database.</li>
       </ul>
-      <a
-        href="../../../assets/template.csv"
-        class="text-blue-600 underline m-1"
-        >Download the template</a
-      >
-    </div>
+       </div>
   </div>
   <div class="w-1/2 p-4 py-16 border border-l-gray-600">
     <p class="text-lg">upload file :</p>
@@ -87,7 +85,7 @@ Go back</p>
     <p *ngIf="errmsg" class="text-white bg-red-600 p-3 m-4 rounded-md shadow-sm shadow-black">{{ errmsg }}</p>
     <p *ngIf="msg" class="text-white bg-green-700 p-3 m-4 rounded-md shadow-sm shadow-black">{{ msg }}</p>
 
-    <div *ngIf="msg">
+    <div *ngIf="errorsArray">
       <p class="text-lg text-gray-500 p-4 mt-24">Process Complated !</p>
       <p class="text-sm text-gray-500 px-4">
         Collect your success file :

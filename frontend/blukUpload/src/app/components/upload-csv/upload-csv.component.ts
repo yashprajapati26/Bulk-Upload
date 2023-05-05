@@ -67,20 +67,31 @@ export class UploadCsvComponent {
       this.uploadcsvservice.upload(formData).subscribe((res: any) => {
         console.log(res)
         this.msg = res['msg']
+
         this.sucessFile = res.data['success'];
         this.errorFile = res.data['errors'];
         this.successArray = res.data['successArray']
         this.errorsArray = res.data['errorsArray']
         this.createExcelSheet()
         this.ngxLoader.stop();
+        setTimeout(() => {
+          this.msg = undefined;
+        }, 3000);
       }, (err: any) => {
         console.log("err : ", err)
         this.errmsg = err.error.msg
+        setTimeout(() => {
+          this.errmsg = undefined;
+        }, 3000);
         this.ngxLoader.stop();
 
       })
     } else {
       this.errmsg = "please select file"
+      setTimeout(() => {
+        this.errmsg = undefined;
+      }, 3000);
+
     }
   }
 
@@ -90,6 +101,9 @@ export class UploadCsvComponent {
     this.msg = undefined
     if (type != "text/csv") {
       this.errmsg = "please select 'csv' file"
+      setTimeout(() => {
+        this.errmsg = undefined;
+      }, 3000);
     } else {
       this.errmsg = undefined
       this.files = <Array<File>>event.target.files;
