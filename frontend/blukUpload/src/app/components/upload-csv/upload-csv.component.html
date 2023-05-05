@@ -28,6 +28,7 @@ Go back</p>
         type="file"
         name="file"
         (change)="selectedFiles($event)"
+        accept=".csv"
         #chooseFile
         hidden
       />
@@ -87,7 +88,7 @@ Go back</p>
     <p *ngIf="errmsg" class="text-white bg-red-600 p-3 m-4 rounded-md shadow-sm shadow-black">{{ errmsg }}</p>
     <p *ngIf="msg" class="text-white bg-green-700 p-3 m-4 rounded-md shadow-sm shadow-black">{{ msg }}</p>
 
-    <div *ngIf="msg">
+    <div *ngIf="successArray">
       <p class="text-lg text-gray-500 p-4 mt-24">Process Complated !</p>
       <p class="text-sm text-gray-500 px-4">
         Collect your success file :

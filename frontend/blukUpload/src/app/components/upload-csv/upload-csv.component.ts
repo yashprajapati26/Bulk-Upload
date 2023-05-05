@@ -82,6 +82,12 @@ export class UploadCsvComponent {
     } else {
       this.errmsg = "please select file"
     }
+
+    setTimeout(() => {
+      this.msg = undefined;
+      this.errmsg = undefined;
+    }, 3000);
+
   }
 
   selectedFiles(event: any) {
@@ -96,6 +102,10 @@ export class UploadCsvComponent {
       this.disable = true
 
     }
+    setTimeout(() => {
+      this.msg = undefined;
+      this.errmsg = undefined;
+    }, 3000);
     console.log(this.files);
     console.log("files :", this.files)
   }
@@ -136,6 +146,10 @@ export class UploadCsvComponent {
         this.disable = true
       }
     }
+    setTimeout(() => {
+      this.msg = undefined;
+      this.errmsg = undefined;
+    }, 3000);
   }
 
   onFileDropeed($event: any) {
