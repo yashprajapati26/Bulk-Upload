@@ -56,7 +56,7 @@ const getCsvFile = async (req, res) => {
           .pipe(csv.parse({ headers: true }))
           .on("error", async (error) => {
             console.error(error);
-            return res.status(500).json({ msg: "please select proper file" });
+            return res.status(500).json({ msg: "please check file format as per given template" });
           })
           .on("data", async (row) => {
             data.push(row);
@@ -187,6 +187,7 @@ const getCsvFile = async (req, res) => {
             });
           });
       } catch (err) {
+        console.log("------------------------------------err : ", err);
         res.status(500).json({ msg: "please select valid file" });
       }
     } else {
