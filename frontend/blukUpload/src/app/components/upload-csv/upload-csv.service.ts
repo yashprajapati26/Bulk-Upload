@@ -10,7 +10,7 @@ export class UploadCsvService {
   constructor(private http:HttpClient) { }
 
   upload(data:any):Observable<any>{
-    let url = "http://localhost:3000/uploadCsv"
+    let url = "http://localhost:3000/uploadData"
     return this.http.post(url,data)
   } 
 }

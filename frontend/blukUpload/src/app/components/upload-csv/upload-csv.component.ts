@@ -12,7 +12,7 @@ import * as XLSX from "xlsx";
 })
 export class UploadCsvComponent {
 
-
+  headers = ['prefix', 'first_name', 'last_name', 'email', 'phone_no', 'age']
   files: any[] = []
   msg: string | undefined;
   errmsg: string | undefined
@@ -77,22 +77,23 @@ export class UploadCsvComponent {
           this.jsonData = data
         })
         console.log("data :", this.jsonData); //JSON
-        this.checkDataValidation(this.jsonData)  // call validation function
+        // this.checkHeaderValidation(this.jsonData)  // call validation function
+        this.uploadData(this.jsonData)
       }
 
 
     }
   
   
-    checkDataValidation(data: []) {
-    console.log("---- fay ====", )
+    checkHeaderValidation(data:any) {
+
     }
   
   
-    uploadData() {
+    uploadData(data:any) {
       if (this.files.length > 0) {
         this.ngxLoader.start();
-        this.uploadcsvservice.upload(this.jsonData).subscribe((res: any) => {
+        this.uploadcsvservice.upload(data).subscribe((res: any) => {
           console.log(res)
           this.msg = res['msg']
           this.successArray = res.data['successArray']

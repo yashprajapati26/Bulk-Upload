@@ -9,7 +9,7 @@ router.get("/", function (req, res, next) {
 });
 
 
-router.post("/uploadCsv", employeeController.SaveData);
+router.post("/uploadData", employeeController.SaveData);
 
 
 
