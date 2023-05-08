@@ -12,88 +12,114 @@ import * as XLSX from "xlsx";
 })
 export class UploadCsvComponent {
 
-  constructor(private uploadcsvservice: UploadCsvService,
-    private ngxLoader: NgxUiLoaderService,
-  ) { }
-
-  SuccessOptions = {
-    filename: "success",
-    fieldSeparator: ',',
-    quoteStrings: '"',
-    decimalseparator: '.',
-    showLabels: false,
-    headers: ['prefix', 'first_name', 'last_name', 'email', 'phone_no', 'age'],
-    showTitle: false,
-    title: '',
-    useBom: false,
-    removeNewLines: true,
-    keys: ['prefix', 'first_name', 'last_name', 'email', 'phone_no', 'age']
-  };
-
-  ErrorOptions = {
-    filename: "errors",
-    fieldSeparator: ',',
-    quoteStrings: '"',
-    decimalseparator: '.',
-    showLabels: false,
-    headers: ['prefix', 'first_name', 'last_name', 'email', 'phone_no', 'age', 'errors'],
-    showTitle: false,
-    title: '',
-    useBom: false,
-    removeNewLines: true,
-    keys: ['prefix', 'first_name', 'last_name', 'email', 'phone_no', 'age', 'errors']
-  };
 
   files: any[] = []
-  sucessFile!: string;
-  errorFile!: string;
   msg: string | undefined;
   errmsg: string | undefined
   successArray: success[] | undefined
   errorsArray: errors[] | undefined
-  ngOnInit() { }
   arr: any[] = []
   disable: boolean = false;
+  jsonData: any;
 
-  submit() {
+  constructor(private uploadcsvservice: UploadCsvService,
+    private ngxLoader: NgxUiLoaderService,) { }
 
-    let formData = new FormData;
-    for (let i = 0; i < this.files.length; i++) {
-      formData.append("files", this.files[i], this.files[i]['name']);
+  ngOnInit() { }
+
+  // csvJSON(csvText: any) {
+  //   var lines = csvText.split("\n");
+  //   var result = [];
+  //   var headers = lines[0].split(",");
+  //   console.log(headers);
+  //   for (var i = 1; i < lines.length - 1; i++) {
+  //     var obj = {}
+  //     var currentline = lines[i].split(",");
+
+  //     for (var j = 0; j < headers.length; j++) {
+  //       obj[headers[j]] = currentline[j];
+  //     }
+  //     result.push(obj);
+  //   }
+  //   console.log(JSON.stringify(result)); //JSON
+  //   this.jsonData = JSON.stringify(result);
+  // }
+
+
+  
+  
+  
+    submit() {
+      console.log("file : --- ", this.files)
+  
+      // const filereader: FileReader = new FileReader();
+      // const selectedfile = this.files[0];
+      // filereader.readAsText(selectedfile);
+      // filereader.onload = () => {
+      //   let text = filereader.result;
+      //   console.log(text);
+      //   this.csvJSON(text);
+      // };
+  
+  
+  
+      // ----- convert csv to json by using XLSX module -----
+  
+      const filereader: FileReader = new FileReader();
+      const selectedfile = this.files[0];
+      filereader.readAsBinaryString(selectedfile);
+      filereader.onload = async (event: any) => {
+        let binarydata = event.target.result;
+        let workbook = XLSX.read(binarydata, { type: 'binary' })
+        workbook.SheetNames.forEach(sheet => {
+          const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+          console.log(data);
+          this.jsonData = data
+        })
+        console.log("data :", this.jsonData); //JSON
+        this.checkDataValidation(this.jsonData)  // call validation function
+      }
+
+
     }
-    if (this.files.length > 0) {
-      this.ngxLoader.start();
-
-      this.uploadcsvservice.upload(formData).subscribe((res: any) => {
-        console.log(res)
-        this.msg = res['msg']
-        this.sucessFile = res.data['success'];
-        this.errorFile = res.data['errors'];
-        this.successArray = res.data['successArray']
-        this.errorsArray = res.data['errorsArray']
-        this.createExcelSheet()
-        this.ngxLoader.stop();
-
-      }, (err: any) => {
-        console.log("err : ", err)
-        this.errmsg = err.error.msg
-        this.ngxLoader.stop();
-
-      })
-    } else {
-      this.errmsg = "please select file"
+  
+  
+    checkDataValidation(data: []) {
+    console.log("---- fay ====", )
     }
-
-    setTimeout(() => {
-      this.msg = undefined;
-      this.errmsg = undefined;
-    }, 3000);
-
-  }
-
+  
+  
+    uploadData() {
+      if (this.files.length > 0) {
+        this.ngxLoader.start();
+        this.uploadcsvservice.upload(this.jsonData).subscribe((res: any) => {
+          console.log(res)
+          this.msg = res['msg']
+          this.successArray = res.data['successArray']
+          this.errorsArray = res.data['errorsArray']
+          this.createExcelSheet()
+          this.ngxLoader.stop();
+        }, (err: any) => {
+          console.log("err : ", err)
+          this.errmsg = err.error.msg
+          this.ngxLoader.stop();
+        })
+      } else {
+        this.errmsg = "please select file"
+      }
+      setTimeout(() => {
+        this.msg = undefined;
+        this.errmsg = undefined;
+      }, 3000);
+    }
+  
+  
+  
+  
+  // for select file
+  
   selectedFiles(event: any) {
     let type = event.target.files[0].type;
-    console.log(type)
     this.msg = undefined
     if (type != "text/csv") {
       this.errmsg = "please select 'csv' file"
@@ -101,15 +127,17 @@ export class UploadCsvComponent {
       this.errmsg = undefined
       this.files = <Array<File>>event.target.files;
       this.disable = true
-
     }
     setTimeout(() => {
       this.msg = undefined;
       this.errmsg = undefined
     }, 3000);
-    console.log(this.files);
-    console.log("files :", this.files)
   }
+
+
+
+
+  // for drag and drop 
 
   @HostListener('dragover', ['$event']) public onDragOnOver(evt: any) {
     evt.preventDefault();
@@ -117,17 +145,15 @@ export class UploadCsvComponent {
     console.log("called ... drag over")
   }
 
-
   @HostListener('dragleave', ['$event']) public onDragOnLeave(evt: any) {
     evt.preventDefault();
     evt.stopPropagation();
     console.log("called ... leave drag")
   }
-
+  
   @HostListener('drop', ['$event']) public ondrop(evt: any) {
     evt.preventDefault();
     evt.stopPropagation();
-    console.log("called ... drop")
     const files = evt.dataTransfer.files;
     if (files.length > 0) {
       console.log(`you dropeed ${files.length} files`, files)
@@ -152,7 +178,7 @@ export class UploadCsvComponent {
       this.errmsg = undefined;
     }, 3000);
   }
-
+  
   onFileDropeed($event: any) {
     if (this.files.length > 1) this.errmsg = "Only one file at time allow";
     else {
@@ -163,24 +189,21 @@ export class UploadCsvComponent {
     }
     console.log("files :", this.files)
   }
-
-
+  
+  
+  
+  // for convert json/array to excel file
+  
   createExcelSheet() {
     const fileName = "results.xlsx";
     const sheetName = ["success", "errors",];
     this.arr = [this.successArray, this.errorsArray]
-    console.log("arr --> ", this.arr)
     let wb = XLSX.utils.book_new();
-    console.log("wb --> ", wb)
     for (var i = 0; i < sheetName.length; i++) {
       let ws = XLSX.utils.json_to_sheet(this.arr[i]);
-      console.log("ws --> ", ws)
-
       XLSX.utils.book_append_sheet(wb, ws, sheetName[i]);
     }
     XLSX.writeFile(wb, fileName);
   }
-
-
 }
 

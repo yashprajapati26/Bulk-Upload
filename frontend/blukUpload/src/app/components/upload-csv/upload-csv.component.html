@@ -33,6 +33,27 @@ Go back</p>
         hidden
       />
     </div>
+    
+    <div class="text-gray-600 border text-sm px-10 py-6">
+      <p class="my-2">
+        To upload users you must follow below instaruction and template<br>Please ensure that:
+      </p>
+      <ul class="list-disc mx-5">
+        <li>all fields are complated</li>
+        <li>only valid email address are included</li>
+        <li>titles are written with a capital letter and do not icluded any full stops(Mr, Mrs, Ms, Miss, Dr)</li>
+        <li>that the column heading are delivered exactly as they are in the template.</li>
+
+      </ul>
+      <a
+        href="../../../assets/template.csv"
+        class="text-blue-600 underline m-1"
+        >Download the template</a
+      >
+    </div>
+  </div>
+  <div class="w-1/2 p-4 py-16 border border-l-gray-600">
+    <p class="text-lg">upload file :</p>
     <div *ngIf="files" class="p-1 m-4">
       <div class="flex flex-cols">
         <div
@@ -58,27 +79,6 @@ Go back</p>
         </div>
       </div>
     </div>
-    <div class="text-gray-600 border text-sm px-10 py-6">
-      <p class="my-2">
-        To upload users you must follow below instaruction and template<br>Please ensure that:
-      </p>
-      <ul class="list-disc mx-5">
-        <li>all fields are complated</li>
-        <li>only valid email address are included</li>
-        <li>titles are written with a capital letter and do not icluded any full stops(Mr, Mrs, Ms, Miss, Dr)</li>
-        <li>that the column heading are delivered exactly as they are in the template.</li>
-
-      </ul>
-      <a
-        href="../../../assets/template.csv"
-        class="text-blue-600 underline m-1"
-        >Download the template</a
-      >
-    </div>
-  </div>
-  <div class="w-1/2 p-4 py-16 border border-l-gray-600">
-    <p class="text-lg">upload file :</p>
-   
     <button
       (click)="submit()"
       class="m-2 p-2 bg-sky-500 text-sm rounded text-center m-full w-20  hover:shadow-sm hover:shadow-black" 
@@ -86,30 +86,7 @@ Go back</p>
       Submit
     </button>
     <p *ngIf="errmsg" class="text-white bg-red-600 p-3 m-4 rounded-md shadow-sm shadow-black">{{ errmsg }}</p>
-    <p *ngIf="msg" class="text-white bg-green-700 p-3 m-4 rounded-md shadow-sm shadow-black">{{ msg }}</p>
 
-    <div *ngIf="successArray">
-      <p class="text-lg text-gray-500 p-4 mt-24">Process Complated !</p>
-      <p class="text-sm text-gray-500 px-4">
-        Collect your success file :
-        <angular2csv
-          class="text-sm text-blue-500"
-          *ngIf="successArray"
-          [data]="successArray"
-          filename="success"
-          [options]="SuccessOptions"
-        ></angular2csv>
-      </p>
-      <p class="text-sm text-gray-500 px-4">
-        collect your errors file :
-        <angular2csv
-          class="text-sm text-blue-500"
-          *ngIf="errorsArray"
-          [data]="errorsArray"
-          filename="errors"
-          [options]="ErrorOptions"
-        ></angular2csv>
-      </p>
-    </div>
+   
   </div>
 </div>
