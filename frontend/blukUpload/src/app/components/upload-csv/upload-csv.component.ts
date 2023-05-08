@@ -73,6 +73,7 @@ export class UploadCsvComponent {
         this.errorsArray = res.data['errorsArray']
         this.createExcelSheet()
         this.ngxLoader.stop();
+
       }, (err: any) => {
         console.log("err : ", err)
         this.errmsg = err.error.msg
@@ -82,6 +83,11 @@ export class UploadCsvComponent {
     } else {
       this.errmsg = "please select file"
     }
+
+    setTimeout(() => {
+      this.msg = undefined;
+      this.errmsg = undefined
+    }, 3000);
   }
 
   selectedFiles(event: any) {
@@ -96,6 +102,11 @@ export class UploadCsvComponent {
       this.disable = true
 
     }
+    setTimeout(() => {
+      this.msg = undefined;
+      this.errmsg = undefined
+
+    }, 3000);
     console.log(this.files);
     console.log("files :", this.files)
   }
@@ -136,6 +147,11 @@ export class UploadCsvComponent {
         this.disable = true
       }
     }
+    setTimeout(() => {
+      this.msg = undefined;
+      this.errmsg = undefined
+
+    }, 3000);
   }
 
   onFileDropeed($event: any) {
