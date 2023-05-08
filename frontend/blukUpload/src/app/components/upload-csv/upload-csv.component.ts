@@ -86,8 +86,9 @@ export class UploadCsvComponent {
 
     setTimeout(() => {
       this.msg = undefined;
-      this.errmsg = undefined
+      this.errmsg = undefined;
     }, 3000);
+
   }
 
   selectedFiles(event: any) {
@@ -105,7 +106,6 @@ export class UploadCsvComponent {
     setTimeout(() => {
       this.msg = undefined;
       this.errmsg = undefined
-
     }, 3000);
     console.log(this.files);
     console.log("files :", this.files)
@@ -149,8 +149,7 @@ export class UploadCsvComponent {
     }
     setTimeout(() => {
       this.msg = undefined;
-      this.errmsg = undefined
-
+      this.errmsg = undefined;
     }, 3000);
   }
 
