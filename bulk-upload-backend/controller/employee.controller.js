@@ -88,26 +88,26 @@ const SaveData = async (req, res) => {
       }
     });
 
-    const latestSuccess = [];
+    const latestSuccess = success;
     const latestErrors = errors;
 
-    await Promise.all(
-      success.map(async (row) => {
-        let isExist = await employeeService.findOne(["id"], {
-          email: row.email,
-        });
-        console.log("is exist : ", isExist);
-        if (isExist) {
-          row.errors = "Dublicate email in database, ";
-          latestErrors.push(row);
-          console.log("after pop :", row);
-        } else {
-          latestSuccess.push(row);
-        }
-      })
-    );
+    // await Promise.all(
+    //   success.map(async (row) => {
+    //     let isExist = await employeeService.findOne(["id"], {
+    //       email: row.email,
+    //     });
+    //     console.log("is exist : ", isExist);
+    //     if (isExist) {
+    //       row.errors = "Dublicate email in database, ";
+    //       latestErrors.push(row);
+    //       console.log("after pop :", row);
+    //     } else {
+    //       latestSuccess.push(row);
+    //     }
+    //   })
+    // );
 
-    await employeeService.bulkCreate(latestSuccess);
+    // await employeeService.bulkCreate(latestSuccess);
 
     return res.status(200).json({
       msg: "sucessfully process done",
