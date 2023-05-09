@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
-    "database": "instagram_clone",
-    "host": "localhost",
+    "username": "mitesh_sathvara",
+    "password": "deep70",
+    "database": "mitesh_sathvara4",
+    "host": "radixusers2.com",
     "dialect": "mysql"
   },
   "test": {

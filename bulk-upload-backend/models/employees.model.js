@@ -10,7 +10,7 @@ const Employees = sequelize.define(
       autoIncrement: true,
     },
     prefix: {
-        type: Sequelize.ENUM("Mrs", "Mr", "Dr"),
+        type: Sequelize.ENUM("Mrs", "Mr", "Dr","Miss"),
         allowNull: false,
     },
     first_name: {
